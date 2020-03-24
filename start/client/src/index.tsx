@@ -31,21 +31,6 @@ cache.writeData({
   }
 });
 
-client
-  .query({
-    query: gql`
-      query GetLaunch {
-        launch(id: 56) {
-          id
-          mission {
-            name
-          }
-        }
-      }
-    `
-  })
-  .then(result => console.log(result));
-
 const IS_LOGGED_IN = gql`
   query IsUserLoggedIn {
     isLoggedIn @client

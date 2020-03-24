@@ -42,7 +42,6 @@ const Launches: React.FC<LaunchesProps> = () => {
     GetLaunchListTypes.GetLaunchList,
     GetLaunchListTypes.GetLaunchListVariables
   >(GET_LAUNCHES);
-
   if (loading) return <Loading />;
   if (error || !data) return <p>ERROR</p>;
 
