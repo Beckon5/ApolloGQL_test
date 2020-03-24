@@ -6,28 +6,9 @@ import { LaunchTile, Header, Button, Loading } from "../components";
 import { RouteComponentProps } from "@reach/router";
 import * as GetLaunchListTypes from "./__generated__/GetLaunchList";
 
-const GET_LAUNCHES = gql`
-  query launchList($after: String) {
-    launches(after: $after) {
-      cursor
-      hasMore
-      launches {
-        id
-        isBooked
-        rocket {
-          id
-          name
-        }
-        mission {
-          name
-          missionPatch
-        }
-      }
-    }
-  }
-`;
 export const LAUNCH_TILE_DATA = gql`
   fragment LaunchTile on Launch {
+    __typename
     id
     isBooked
     rocket {
@@ -40,26 +21,30 @@ export const LAUNCH_TILE_DATA = gql`
     }
   }
 `;
-interface LaunchesProps extends RouteComponentProps {}
+
+export const GET_LAUNCHES = gql`
+  query GetLaunchList($after: String) {
+    launches(after: $after) {
+      cursor
+      hasMore
+      launches {
+        ...LaunchTile
+      }
+    }
+  }
+  ${LAUNCH_TILE_DATA}
+`;
 
 interface LaunchesProps extends RouteComponentProps {}
 
 const Launches: React.FC<LaunchesProps> = () => {
-  const {
-    data,
-    loading,
-    error,
-
-    fetchMore
-  } = useQuery<
+  const { data, loading, error, fetchMore } = useQuery<
     GetLaunchListTypes.GetLaunchList,
     GetLaunchListTypes.GetLaunchListVariables
   >(GET_LAUNCHES);
-  // same as above
 
   if (loading) return <Loading />;
-  if (error) return <p>ERROR</p>;
-  if (!data) return <p>Not found</p>;
+  if (error || !data) return <p>ERROR</p>;
 
   return (
     <Fragment>
